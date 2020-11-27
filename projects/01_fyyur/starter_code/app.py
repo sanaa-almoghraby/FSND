@@ -12,17 +12,20 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from flask_migrate import Migrate
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
+
 
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 # TODO: connect to a local postgresql database
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///fyyer'
 #----------------------------------------------------------------------------#
 # Models.
 #----------------------------------------------------------------------------#
@@ -37,7 +40,7 @@ class Venue(db.Model):
     address = db.Column(db.String(120))
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
-    facebook_link = db.Column(db.String(120))
+    facebook_link = db.Column(db.String(120)) 
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -54,9 +57,11 @@ class Artist(db.Model):
     facebook_link = db.Column(db.String(120))
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
-
+# class Show(db.Model):
+#   __tablename__='show'
+#   id = db.Column(db.Integer, primary_key=True)
+#   name = db.Column(db.String)
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
@@ -86,6 +91,7 @@ def index():
 @app.route('/venues')
 def venues():
   # TODO: replace with real venues data.
+  #data = Venue.query.all()
   #       num_shows should be aggregated based on number of upcoming shows per venue.
   data=[{
     "city": "San Francisco",
@@ -243,6 +249,7 @@ def delete_venue(venue_id):
 @app.route('/artists')
 def artists():
   # TODO: replace with real data returned from querying the database
+  
   data=[{
     "id": 4,
     "name": "Guns N Petals",
